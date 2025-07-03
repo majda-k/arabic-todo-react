@@ -1,24 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import TodoList from "./todo_list";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+
+
+
+const theme = createTheme({
+  typography: {
+    fontFamily: ["Alexandria"],
+  },
+});
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+
+    
+    <ThemeProvider theme={theme}>
+      <div className="App" style={{ backgroundColor: "black", height: "100vh" }}>
+        <container
+          maxWidth="sm"
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+          }}
+          fixed
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          <div
+            style={{
+              width: "25%",
+              maxHeight:"80vh",
+              backgroundColor: "white",
+              paddingBottom: "20px",
+              
+            }}
+          >
+            <TodoList  />
+          </div>
+        </container>
+      </div>
+    </ThemeProvider>
+
+
   );
 }
 

@@ -1,0 +1,8 @@
+
+.todoCard:hover{
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+.todoCard{
+    transition: all 0.3s !important;
+}
