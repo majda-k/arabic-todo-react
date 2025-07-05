@@ -10,6 +10,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import TodoContext from "./todoContext";
+import { ToastContext } from './toastContext';
 
 
 
@@ -21,6 +22,7 @@ export default function Todo({ todo, handleCheck }) {
   const [updatedTodo , setUpdatedTodo]= useState({title:"", details :""});
 
   const { todos, setTodos } = useContext(TodoContext); // ✅ accès au contexte
+ const {showHideToast} = useContext(ToastContext);
 
   function handleCheckClick() {
     handleCheck(todo.id);
@@ -28,6 +30,7 @@ export default function Todo({ todo, handleCheck }) {
 
   function handleDeleteClick() {
     setShowDeleteDialog(true);
+    showHideToast("تم الحذف بنجاح ");
   }
 
   function handleClose() {
@@ -64,6 +67,8 @@ function handleAgreeEdit(e) {
   setTodos(updatedTodos);
    localStorage.setItem("todos" , JSON.stringify(updatedTodos))
   setShowEditDialog(false)
+    showHideToast(" تم التعديل بنجاح");
+
 
 }
 

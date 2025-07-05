@@ -1,7 +1,9 @@
 import "./App.css";
+import MySnackBar from "./MySnackBar";
 import TodoList from "./todo_list";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-
+import { useState } from "react";
+import { ToastContext } from "./toastContext.jsx";
 
 
 const theme = createTheme({
@@ -11,10 +13,24 @@ const theme = createTheme({
 });
 
 function App() {
+  const [open, setOpen] = useState(false);
+ const [message, setMessage] = useState(false);
+
+function showHideToast (message = ""){
+
+  setOpen(true);
+  setMessage(message);
+  setTimeout(()=>{
+    setOpen(false);
+  }, 2000);
+}
+
+
   return (
 
     
     <ThemeProvider theme={theme}>
+      <ToastContext.Provider value = {{showHideToast}}>
       <div className="App" style={{ backgroundColor: "black", height: "100vh" }}>
         <container
           maxWidth="sm"
@@ -35,10 +51,13 @@ function App() {
               
             }}
           >
+           
             <TodoList  />
           </div>
+           <MySnackBar open={open} message={message}/>
         </container>
       </div>
+      </ToastContext.Provider>
     </ThemeProvider>
 
 

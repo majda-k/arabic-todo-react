@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
+
 
 import "../src/todo_list.css"; // Assuming you have a CSS file for styles
 
@@ -8,6 +9,7 @@ import TextField from "@mui/material/TextField";
 import TodoContext from "./todoContext";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import { ToastContext } from "./toastContext";
 
 const InitialTodos = [
   {
@@ -33,6 +35,7 @@ export default function TodoList() {
   const [todos, setTodos] = useState(InitialTodos);
   const [titleInput, setTitleInput] = useState("");
   const [diplayChangeTodos , setDiplayChangeTodos ]= useState("all");
+  const {showHideToast} = useContext(ToastContext);
 
 
 function changeTodos (e , newValue){
@@ -43,14 +46,20 @@ if(newValue !=null){
 
 
 
-    const CompletedTodos = todos.filter((t)=>{
+    const CompletedTodos = useMemo(()=>{
+        return  todos.filter((t)=>{
+            console.log("calling completed")
         return !t.isCompleted;
-    });
+    })
+    }, [todos]);
 
 
-   const notCompletedTodos = todos.filter((t)=>{
+   const notCompletedTodos = useMemo(()=>{
+    return todos.filter((t)=>{
+        console.log("calling not completed")
         return t.isCompleted;
- });
+   }) 
+ } , [todos]);
 
 
   function handleCheckClick(todoId) {
@@ -61,6 +70,7 @@ if(newValue !=null){
       return t;
     });
     setTodos(updateTodo);
+    showHideToast("تمت إضافتها للمهام المنجزة");
   }
 
 let displayTodos = todos;
@@ -84,6 +94,7 @@ displayTodos = notCompletedTodos;
     const storageTodos = JSON.parse(localStorage.getItem("todos")) ?? [];
     if (Array.isArray(storageTodos)) {
       setTodos(storageTodos);
+      
     }
   }, []);
 
@@ -98,6 +109,7 @@ displayTodos = notCompletedTodos;
     const updatedTodos = [...todos, newTodo];
     localStorage.setItem("todos", JSON.stringify(updatedTodos));
     setTitleInput("");
+    showHideToast("تمت الإضافة بنجاح");
   }
 
   return (
