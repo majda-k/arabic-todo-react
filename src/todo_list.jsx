@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState, useReducer } from "react";
 
 
 import "../src/todo_list.css"; // Assuming you have a CSS file for styles
@@ -10,6 +10,7 @@ import TodoContext from "./todoContext";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { ToastContext } from "./toastContext";
+import reducerFunction from "./reducer"; // Importing the reducer function
 
 const InitialTodos = [
   {
@@ -32,10 +33,11 @@ const InitialTodos = [
   },
 ];
 export default function TodoList() {
-  const [todos, setTodos] = useState(InitialTodos);
+ 
   const [titleInput, setTitleInput] = useState("");
   const [diplayChangeTodos , setDiplayChangeTodos ]= useState("all");
   const {showHideToast} = useContext(ToastContext);
+   const[todos , dispatch] = useReducer(reducerFunction, InitialTodos); // ✅ utilisation du reducer
 
 
 function changeTodos (e , newValue){
@@ -69,7 +71,7 @@ if(newValue !=null){
       }
       return t;
     });
-    setTodos(updateTodo);
+    dispatch({type: "checked", payload: updateTodo});
     showHideToast("تمت إضافتها للمهام المنجزة");
   }
 
@@ -93,28 +95,29 @@ displayTodos = notCompletedTodos;
     console.log("calling use Effect");
     const storageTodos = JSON.parse(localStorage.getItem("todos")) ?? [];
     if (Array.isArray(storageTodos)) {
-      setTodos(storageTodos);
+      dispatch({type: "init", payload: storageTodos});
       
     }
   }, []);
 
   function handleAddClick() {
-    const newTodo = {
-      id: uuidv4(),
-      title: titleInput,
-      details: "",
-      isCompleted: "false",
-    };
-    setTodos([...todos, newTodo]);
-    const updatedTodos = [...todos, newTodo];
-    localStorage.setItem("todos", JSON.stringify(updatedTodos));
+    // const newTodo = {
+    //   id: uuidv4(),
+    //   title: titleInput,
+    //   details: "",
+    //   isCompleted: "false",
+    // };
+    // setTodos([...todos, newTodo]);
+    // const updatedTodos = [...todos, newTodo];
+    // localStorage.setItem("todos", JSON.stringify(updatedTodos));
+    dispatch({type : "added", payload: {title: titleInput}});
     setTitleInput("");
     showHideToast("تمت الإضافة بنجاح");
   }
 
   return (
     <div className="card" style={{maxHeight:"80vh" , maxheight:"80vh" , overflowY:"auto", overflowX:"hidden" }}>
-    <TodoContext.Provider value={{ todos, setTodos }}>
+    <TodoContext.Provider value={{ todos, dispatch }}>
       <div >
         <h1
           style={{

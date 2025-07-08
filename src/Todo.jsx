@@ -14,15 +14,20 @@ import { ToastContext } from './toastContext';
 
 
 
+
 import "../src/todo_list.css"; // Assuming you have a CSS file for styles
+
 
 export default function Todo({ todo, handleCheck }) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [ShowEditDialog, setShowEditDialog] = useState(false);
   const [updatedTodo , setUpdatedTodo]= useState({title:"", details :""});
+ 
+const { dispatch } = useContext(TodoContext);
 
-  const { todos, setTodos } = useContext(TodoContext); // ✅ accès au contexte
+ 
  const {showHideToast} = useContext(ToastContext);
+ 
 
   function handleCheckClick() {
     handleCheck(todo.id);
@@ -39,12 +44,13 @@ export default function Todo({ todo, handleCheck }) {
   }
 
   function handleAgreeClick() {
-    const updatedTodos = todos.filter((t) => {
-      return t.id !== todo.id;
-    });
+    // const updatedTodos = todos.filter((t) => {
+    //   return t.id !== todo.id;
+    // });
 
-    setTodos(updatedTodos);
-     localStorage.setItem("todos" , JSON.stringify(updatedTodos))
+    // setTodos(updatedTodos);
+    //  localStorage.setItem("todos" , JSON.stringify(updatedTodos))
+    dispatch({ type: "deleted", payload: { id: todo.id } }); // ✅ utilisation du reducer
     handleClose();
   }
 
@@ -54,19 +60,20 @@ export default function Todo({ todo, handleCheck }) {
 
 function handleAgreeEdit(e) {
   e.preventDefault();
-  const updatedTodos = todos.map((t) => {
-    if (t.id === todo.id) {
-      return {
-        ...t,
-        title: updatedTodo.title,
-        details: updatedTodo.details,
-      };
-    }else
-    return t;
-  });
-  setTodos(updatedTodos);
-   localStorage.setItem("todos" , JSON.stringify(updatedTodos))
-  setShowEditDialog(false)
+  // const updatedTodos = todos.map((t) => {
+  //   if (t.id === todo.id) {
+  //     return {
+  //       ...t,
+  //       title: updatedTodo.title,
+  //       details: updatedTodo.details,
+  //     };
+  //   }else
+  //   return t;
+  // });
+  // setTodos(updatedTodos);
+  //  localStorage.setItem("todos" , JSON.stringify(updatedTodos))
+  dispatch({ type: "edited", payload: { id: todo.id, title: updatedTodo.title, details: updatedTodo.details } }); // ✅ utilisation du reducer
+  setShowEditDialog(false);
     showHideToast(" تم التعديل بنجاح");
 
 
